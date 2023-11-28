@@ -87,6 +87,7 @@ const ProfileMenu = () => {
 }
 
 export default function MainNav() {
+    const session = useSession()
     return (
         <Navbar isBordered>
             <NavbarContent justify="start">
@@ -115,7 +116,10 @@ export default function MainNav() {
 
 
             <NavbarContent as="div" className="w-auto items-center" justify="end">
-                <NewPostButton />
+
+                {session.status === 'authenticated' && (
+                    <NewPostButton />
+                )}
                 <Input
                     classNames={{
                         base: "max-w-full sm:max-w-[10rem] h-10",

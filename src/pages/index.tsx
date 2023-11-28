@@ -16,9 +16,11 @@ export default function Home() {
   const { theme } = useTheme()
   const [newPostContent, setNewPostContent] = useState('')
 
-  const hello = api.post.hello.useQuery({ text: "from tRPC" });
-
-  const posts = api.post.getAll.useQuery()
+  const fetchEnabled = session.status === 'authenticated'
+  const posts = api.post.getAll.useQuery(undefined, {
+    enabled: fetchEnabled,
+    refetchOnWindowFocus: false,
+  })
 
   const postMutation = api.post.create.useMutation({
     onSuccess: () => {
@@ -44,6 +46,14 @@ export default function Home() {
     })
     await posts.refetch()
   }
+
+  let endMsg = 'You reached the end. Time to touch some grass! �'
+
+  if (session.status === 'unauthenticated') {
+    endMsg = 'Looks like you are not signed in. Please sign in to see posts'
+  }
+
+  console.log(posts)
 
   return (
     <>
@@ -73,7 +83,7 @@ export default function Home() {
               </form>
             </div>
           )}
-          {posts.isLoading && (
+          {fetchEnabled && posts.isLoading && (
             <div className="border-b border-divider h-32 w-full flex items-center justify-center">
               <CircularProgress color='primary' size="lg" className="ml-2" />
             </div>
@@ -111,7 +121,10 @@ export default function Home() {
                 Talk<span className="text-primary">mellow</span>
               </h1>
             </div>
-            <div>You reached the end. Time to touch some grass! 🖼️</div>
+            <div>️{endMsg}</div>
+            {session.status === 'unauthenticated' && (
+              <Button color='primary' onPress={() => signIn()}>Login / Register</Button>
+            )}
           </div>
         </div>
       </MainLayout>
