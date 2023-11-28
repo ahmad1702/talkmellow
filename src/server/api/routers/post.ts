@@ -18,9 +18,6 @@ export const postRouter = createTRPCRouter({
   create: protectedProcedure
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      // simulate a slow db call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
       return ctx.db.post.create({
         data: {
           name: input.name,
@@ -30,8 +27,6 @@ export const postRouter = createTRPCRouter({
     }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
-    // simulate a slow db call
-    await new Promise((resolve) => setTimeout(resolve, 3000));
     return ctx.db.post.findMany({
       orderBy: { createdAt: "desc" },
       include: {
@@ -54,7 +49,6 @@ export const postRouter = createTRPCRouter({
     })
   }),
   remoteLikePost: protectedProcedure.input(z.object({ likeId: z.string() })).mutation(({ ctx, input }) => {
-
     // For some reason vscode lint is not reading types directly here and just assuming its 'any'
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return ctx.db.postLikes.delete({
