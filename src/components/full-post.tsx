@@ -37,7 +37,7 @@ type PostProps = {
     };
 };
 
-const Post = ({ post, user }: PostProps) => {
+const FullPost = ({ post, user }: PostProps) => {
     const [myLike, setMyLike] = useState<{
         id: string;
         postId: number;
@@ -60,7 +60,6 @@ const Post = ({ post, user }: PostProps) => {
     }, [user, post]);
 
     const handleLike = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
         e.stopPropagation();
 
         if (!isLiked) {
@@ -118,7 +117,7 @@ const Post = ({ post, user }: PostProps) => {
                 />
             </div>
             <div className="ml-12 text-xl font-semibold">{post.name}</div>
-            <div className="mt-2 flex items-center justify-between">
+            <div className="mt-2 flex items-center justify-between mx-4 border-y border-divider">
                 <Button
                     as={Link}
                     href={href}
@@ -145,4 +144,4 @@ const Post = ({ post, user }: PostProps) => {
     );
 };
 
-export default Post;
+export default FullPost;

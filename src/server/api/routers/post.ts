@@ -26,6 +26,18 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
+  getOne: publicProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
+    return ctx.db.post.findFirst({
+      where: {
+        id: input.id
+      },
+      orderBy: { createdAt: "desc" },
+      include: {
+        createdBy: true,
+        PostLikes: true,
+      }
+    });
+  }),
   getAll: publicProcedure.query(async ({ ctx }) => {
     return ctx.db.post.findMany({
       orderBy: { createdAt: "desc" },

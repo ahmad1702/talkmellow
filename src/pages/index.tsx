@@ -88,6 +88,8 @@ export default function Home() {
             </div>
           )}
 
+
+
           {/* Array of posts are here */}
           {!!posts.data && posts.data.map((post) => <Post key={post.id} post={post} user={user} />)}
 

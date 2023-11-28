@@ -1,4 +1,4 @@
-import { Avatar, Button, CircularProgress, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input, Navbar, NavbarBrand, NavbarContent } from "@nextui-org/react";
+import { Avatar, Button, CircularProgress, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input, Navbar, NavbarBrand, NavbarContent, Tooltip } from "@nextui-org/react";
 
 import appConfig from "@/appConfig";
 import { Moon, Search, Sun } from "lucide-react";
@@ -121,18 +121,25 @@ export default function MainNav() {
                 {session.status === 'authenticated' && (
                     <NewPostButton />
                 )}
-                <Input
-                    classNames={{
-                        base: "max-w-full sm:max-w-[10rem] h-10",
-                        mainWrapper: "h-full",
-                        input: "text-small",
-                        inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
-                    }}
-                    placeholder="Type to search..."
-                    size="sm"
-                    startContent={<Search />}
-                    type="search"
-                />
+                <Tooltip
+                    placement='bottom'
+                    content="Sorry! Search isn't working right now"
+                    offset={15}
+                    showArrow
+                >
+                    <Input
+                        classNames={{
+                            base: "max-w-full sm:max-w-[10rem] h-10",
+                            mainWrapper: "h-full",
+                            input: "text-small",
+                            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                        }}
+                        placeholder="Type to search..."
+                        size="sm"
+                        startContent={<Search />}
+                        type="search"
+                    />
+                </Tooltip>
                 <ProfileMenu />
             </NavbarContent>
         </Navbar>
