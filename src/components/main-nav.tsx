@@ -4,6 +4,7 @@ import appConfig from "@/appConfig";
 import { Moon, Search, Sun } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
+import Link from "next/link";
 import Logo from "./logo";
 import NewPostButton from "./new-post-button";
 
@@ -91,7 +92,7 @@ export default function MainNav() {
     return (
         <Navbar isBordered>
             <NavbarContent justify="start">
-                <NavbarBrand className="mr-4">
+                <NavbarBrand className="mr-4" as={Link} href='/'>
                     <Logo className="w-6 h-6 mr-2" />
                     <p className="hidden sm:block font-bold text-inherit">{appConfig.title}</p>
                 </NavbarBrand>

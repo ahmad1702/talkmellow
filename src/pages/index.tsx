@@ -117,7 +117,7 @@ export default function Home() {
           <div className="p-4 py-10 flex items-center justify-center flex-col gap-2">
             <div className="flex items-center justify-center">
               <Logo className="scale-150 mr-4" />
-              <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
+              <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
                 Talk<span className="text-primary">mellow</span>
               </h1>
             </div>
