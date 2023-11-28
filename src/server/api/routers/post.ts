@@ -35,9 +35,33 @@ export const postRouter = createTRPCRouter({
     return ctx.db.post.findMany({
       orderBy: { createdAt: "desc" },
       include: {
-        createdBy: true
+        createdBy: true,
+        PostLikes: true,
       }
     });
+  }),
+  likePost: protectedProcedure.input(z.object({ postId: z.number() })).mutation(({ ctx, input }) => {
+    const postId = input.postId
+    const userId = ctx.session.user.id
+
+    // For some reason vscode lint is not reading types directly here and just assuming its 'any'
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    return ctx.db.postLikes.create({
+      data: {
+        postId,
+        userId,
+      }
+    })
+  }),
+  remoteLikePost: protectedProcedure.input(z.object({ likeId: z.string() })).mutation(({ ctx, input }) => {
+
+    // For some reason vscode lint is not reading types directly here and just assuming its 'any'
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    return ctx.db.postLikes.delete({
+      where: {
+        id: input.likeId
+      }
+    })
   }),
 
   getLatest: protectedProcedure.query(({ ctx }) => {

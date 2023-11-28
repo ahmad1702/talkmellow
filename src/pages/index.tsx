@@ -3,9 +3,10 @@ import Head from "next/head";
 
 import Logo from "@/components/logo";
 import MainLayout from "@/components/main-layout";
+import Post from "@/components/post";
 import { api } from "@/utils/api";
-import { AvatarProps, Button, CircularProgress, Link, Textarea, User } from "@nextui-org/react";
-import { Heart, MessageCircle, MoreHorizontal, PenSquare } from "lucide-react";
+import { Button, CircularProgress, Textarea, User } from "@nextui-org/react";
+import { PenSquare } from "lucide-react";
 import { useTheme } from "next-themes";
 import { ComponentProps, useState } from "react";
 import { toast } from "react-toastify";
@@ -53,8 +54,6 @@ export default function Home() {
     endMsg = 'Looks like you are not signed in. Please sign in to create posts'
   }
 
-  console.log(posts)
-
   return (
     <>
       <Head>
@@ -88,32 +87,10 @@ export default function Home() {
               <CircularProgress color='primary' size="lg" className="ml-2" />
             </div>
           )}
-          {!!posts.data && posts.data.map((post) => {
-            return (
-              <div key={post.id} className="border-b border-divider w-full p-4">
-                <div className="flex items-center justify-between">
-                  <User
-                    name={post.createdBy.name}
-                    description={(
-                      <Link href="https://twitter.com/jrgarciadev" size="sm" isExternal>
-                        @{post.createdBy.email?.split('@').at(0) ?? 'someuser'}
-                      </Link>
-                    )}
-                    avatarProps={{
-                      src: post.createdBy.image ?? undefined,
-                      name: post.createdBy.name?.split(' ').map(val => val[0]).join('')
-                    } as AvatarProps}
-                  />
-                  <Button color='default' className="rounded-full" variant="light" startContent={<MoreHorizontal />} isIconOnly />
-                </div>
-                <div className="text-xl font-semibold ml-12">{post.name}</div>
-                <div className="flex items-center justify-between mt-2">
-                  <Button color='primary' className="rounded-full saturate-0 hover:saturate-100" variant="light" isIconOnly startContent={<MessageCircle />}></Button>
-                  <Button color='danger' className="rounded-full saturate-0 hover:saturate-100" variant="light" isIconOnly startContent={<Heart />}></Button>
-                </div>
-              </div>
-            )
-          })}
+
+          {/* Array of posts are here */}
+          {!!posts.data && posts.data.map((post) => <Post key={post.id} post={post} user={user} />)}
+
           <div className="p-4 py-10 flex items-center justify-center flex-col gap-2">
             <div className="flex items-center justify-center">
               <Logo className="scale-150 mr-4" />

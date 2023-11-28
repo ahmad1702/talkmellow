@@ -25,6 +25,9 @@ model Post {
     userId    String
 
     // @@index([name])
+    PostLikes PostLikes[]
+
+    @@index([userId])
 }
 
 // Necessary for Next auth
@@ -44,6 +47,7 @@ model Account {
     user              User    @relation(fields: [userId], references: [id])
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
 }
 
 model Session {
@@ -52,17 +56,20 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id])
+
+    @@index([userId])
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String      @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?     @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
+    PostLikes     PostLikes[]
 }
 
 model VerificationToken {
@@ -71,4 +78,19 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model PostLikes {
+    id     String @id @default(uuid())
+    post   Post   @relation(fields: [postId], references: [id])
+    user   User   @relation(fields: [userId], references: [id])
+    postId Int
+    userId String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now()) @updatedAt
+
+    @@index([postId])
+    @@index([userId])
+    @@map("post_likes")
 }
