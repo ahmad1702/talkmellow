@@ -35,7 +35,6 @@ export default function Home() {
       })
     }
   })
-  // const { isLoading, error } = postMutation
 
   const handleNewPostSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
