@@ -29,7 +29,9 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
-  getAll: protectedProcedure.query(({ ctx }) => {
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    // simulate a slow db call
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     return ctx.db.post.findMany({
       orderBy: { createdAt: "desc" },
       include: {
