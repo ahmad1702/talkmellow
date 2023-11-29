@@ -35,7 +35,7 @@ export const postRouter = createTRPCRouter({
   getOne: publicProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
     return ctx.db.post.findFirst({
       where: {
-        id: input.id
+        id: input.id,
       },
       orderBy: { createdAt: "desc" },
       include: {
@@ -52,6 +52,9 @@ export const postRouter = createTRPCRouter({
   }),
   getAll: publicProcedure.query(async ({ ctx }) => {
     return ctx.db.post.findMany({
+      where: {
+        parentComment: null
+      },
       orderBy: { createdAt: "desc" },
       include: {
         createdBy: true,
