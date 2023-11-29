@@ -3,15 +3,19 @@ import {
     AvatarProps,
     Button,
     Link as NextUILink,
+    Textarea,
     User,
     cn,
 } from "@nextui-org/react";
-import { Heart, MessageCircle, MoreHorizontal } from "lucide-react";
+import { Heart, MessageCircle, MoreHorizontal, PenSquare } from "lucide-react";
 import { Session } from "next-auth";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 type PostProps = {
+    refetchPosts: () => Promise<void>
     user: Session["user"] | undefined;
     post: {
         createdBy: {
@@ -37,7 +41,9 @@ type PostProps = {
     };
 };
 
-const FullPost = ({ post, user }: PostProps) => {
+const FullPost = ({ post, user, refetchPosts }: PostProps) => {
+    const { theme } = useTheme()
+    const [newComment, setNewComment] = useState('')
     const [myLike, setMyLike] = useState<{
         id: string;
         postId: number;
@@ -49,6 +55,21 @@ const FullPost = ({ post, user }: PostProps) => {
     console.log(post);
     const likeMutation = api.post.likePost.useMutation();
     const removeLikeMutation = api.post.remoteLikePost.useMutation();
+    const postMutation = api.post.create.useMutation({
+        onSuccess: () => {
+            setNewComment('')
+            toast.success('Comment Successfully Created', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: theme === 'dark' ? 'dark' : 'light',
+            })
+        }
+    })
 
     const isLiked = Boolean(myLike);
     useEffect(() => {
@@ -79,12 +100,21 @@ const FullPost = ({ post, user }: PostProps) => {
         }
     };
 
+    const handleNewCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+
+        await postMutation.mutateAsync({
+            name: newComment,
+            parentPostId: post.id
+        })
+        await refetchPosts()
+    }
+
     const href = "/post/" + post.id
     return (
-        <Link
-            href={href}
+        <div
             key={post.id}
-            className="flex w-full cursor-pointer flex-col border-b border-divider p-4 hover:bg-content1/50"
+            className="flex w-full flex-col border-b border-divider p-4 hover:bg-content1/50"
         >
             <div className="flex items-center justify-between">
                 <User
@@ -138,9 +168,30 @@ const FullPost = ({ post, user }: PostProps) => {
                     variant="light"
                     isIconOnly
                     startContent={<Heart className={cn("fill-red-500")} />}
-                ></Button>
+                />
             </div>
-        </Link>
+
+            <form className="mt-2 mx-4" onSubmit={handleNewCommentSubmit}>
+                <Textarea
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    className="text-8xl"
+                    size="lg"
+                    placeholder="What are you thinking about?"
+                    variant='underlined'
+                />
+                <div className="flex items-center justify-end mt-2">
+                    <Button
+                        isLoading={postMutation.isLoading}
+                        type='submit'
+                        color="primary"
+                        startContent={<PenSquare className="h-5" />}
+                    >
+                        Post
+                    </Button>
+                </div>
+            </form>
+        </div>
     );
 };
 

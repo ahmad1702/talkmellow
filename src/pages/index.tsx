@@ -17,9 +17,7 @@ export default function Home() {
   const { theme } = useTheme()
   const [newPostContent, setNewPostContent] = useState('')
 
-  // const fetchEnabled = session.status === 'authenticated'
   const posts = api.post.getAll.useQuery(undefined, {
-    // enabled: fetchEnabled,
     refetchOnWindowFocus: false,
   })
 

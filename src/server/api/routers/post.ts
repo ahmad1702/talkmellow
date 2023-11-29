@@ -16,12 +16,18 @@ export const postRouter = createTRPCRouter({
     }),
 
   create: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
+    .input(z.object({ name: z.string().min(1), parentPostId: z.number().optional() }))
     .mutation(async ({ ctx, input }) => {
+      const parentComment = input.parentPostId
       return ctx.db.post.create({
         data: {
           name: input.name,
           createdBy: { connect: { id: ctx.session.user.id } },
+          parentComment: {
+            connect: {
+              id: parentComment
+            }
+          },
         },
       });
     }),
@@ -35,6 +41,12 @@ export const postRouter = createTRPCRouter({
       include: {
         createdBy: true,
         PostLikes: true,
+        comments: {
+          include: {
+            createdBy: true,
+            PostLikes: true,
+          }
+        },
       }
     });
   }),

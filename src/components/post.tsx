@@ -85,7 +85,7 @@ const Post = ({ post, user }: PostProps) => {
         <Link
             href={href}
             key={post.id}
-            className="flex w-full cursor-pointer flex-col border-b border-divider p-4 hover:bg-content1/50"
+            className="flex w-full cursor-pointer flex-col border-b border-divider p-4 hover:bg-content1-foreground/5 hover:dark:bg-content1/50"
         >
             <div className="flex items-center justify-between">
                 <User

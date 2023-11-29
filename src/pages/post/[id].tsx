@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import FullPost from '@/components/full-post'
 import MainLayout from '@/components/main-layout'
+import PostComponent from '@/components/post'
 import { api } from '@/utils/api'
 import { CircularProgress } from '@nextui-org/react'
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
@@ -22,6 +24,7 @@ const PostPage = ({
     const user = session.data?.user
     const postQuery = api.post.getOne.useQuery({ id: queryId })
     const post = postQuery.data
+    const comments = post?.comments ?? []
     return (
         <>
             <Head>
@@ -37,8 +40,9 @@ const PostPage = ({
                         </div>
                     )}
                     {post && (
-                        <FullPost post={post} user={user} />
+                        <FullPost post={post} user={user} refetchPosts={async () => { await postQuery.refetch() }} />
                     )}
+                    {comments.map((post) => <PostComponent key={post.id} post={post} user={user} />)}
                 </div>
             </MainLayout>
         </>
